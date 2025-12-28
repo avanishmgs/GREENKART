@@ -6,6 +6,11 @@ on:
     - cron: '30 2 * * *'
 
   workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Playwright tag to run (e.g. @greenkart, @smoke, @regression)'
+        required: true
+        default: '@greenkart'
 
 jobs:
   greencart-tests:
@@ -14,6 +19,7 @@ jobs:
 
     env:
       SUITE_NAME: PlaywrightGreenKartTest
+      TAG: ${{ github.event.inputs.tag || '@greenkart' }}
 
     steps:
       - name: Checkout repository
@@ -22,7 +28,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: lts/*
+          node-version: 18
 
       - name: Install dependencies
         run: npm ci
@@ -30,10 +36,11 @@ jobs:
       - name: Install Playwright browsers
         run: npx playwright install --with-deps
 
-      - name: Run GreenKart Playwright Tests
+      - name: Run GreenKart Playwright Tests by Tag
         run: |
           echo "Running Suite: $SUITE_NAME"
-          npx playwright test src/tests
+          echo "Running Playwright Tag: $TAG"
+          npx playwright test --grep "$TAG"
 
       - name: Upload Playwright Report
         if: always()

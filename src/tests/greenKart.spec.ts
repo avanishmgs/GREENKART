@@ -13,7 +13,7 @@ const testData = dataConfig.getTestDataFromCsv(
 );
 
 test.describe('Green Kart Validation', () => {
-    test('Green Kart', async ({ page, context }) => {
+    test('@smoke @regression Green Kart Order Flow', async ({ page, context }) => {
         const pages = new PageManager(page);
         const parentPage = page;
         await page.goto(loginSetup.Url);
