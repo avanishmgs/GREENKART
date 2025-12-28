@@ -1,0 +1,44 @@
+name: PlaywrightGreenKartTest
+
+on:
+  # Daily run at 08:00 AM IST (02:30 UTC)
+  schedule:
+    - cron: '30 2 * * *'
+
+  workflow_dispatch:
+
+jobs:
+  greencart-tests:
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+
+    env:
+      SUITE_NAME: PlaywrightGreenKartTest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+
+      - name: Run GreenKart Playwright Tests
+        run: |
+          echo "Running Suite: $SUITE_NAME"
+          npx playwright test src/tests
+
+      - name: Upload Playwright Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.SUITE_NAME }}-Report
+          path: playwright-report/
+          retention-days: 30

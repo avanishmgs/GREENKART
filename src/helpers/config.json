@@ -1,0 +1,8 @@
+{
+  "env": {
+    "Execution_Env": "rahulshettyacademy"
+  },
+  "urls": {
+    "greenKartUrl": "https://${env}.com/seleniumPractise/#/"
+  }
+}
